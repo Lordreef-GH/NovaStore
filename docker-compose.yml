@@ -1,5 +1,5 @@
 services:
-  web:
+  novastore-web:
     build: .
     image: novastore:local
     ports:
