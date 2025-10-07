@@ -9,14 +9,16 @@ pipeline {
     stage('Checkout') { steps { checkout scm } }
 
     stage('Install & Build') {
-      agent { docker { image "node:${NODE_VERSION}-alpine" args '-u root:root' } }
       steps {
         sh '''
           set -euxo pipefail
-          node -v
-          npm -v
-          npm ci || npm install
-          npm run build
+          docker run --rm -u root:root -v "$PWD:/app" -w /app node:${NODE_VERSION}-alpine sh -lc '
+            set -euxo pipefail
+            node -v
+            npm -v
+            npm ci || npm install
+            npm run build
+          '
         '''
         archiveArtifacts artifacts: 'dist/**', fingerprint: true
       }
