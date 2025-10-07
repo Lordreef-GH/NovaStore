@@ -11,9 +11,9 @@ pipeline {
     stage('Install & Build') {
       steps {
         sh '''
-          set -euxo pipefail
+            set -eu
           docker run --rm -u root:root -v "$PWD:/app" -w /app node:${NODE_VERSION}-alpine sh -lc '
-            set -euxo pipefail
+            set -eu
             node -v
             npm -v
             npm ci || npm install
@@ -27,7 +27,7 @@ pipeline {
     stage('Docker Build') {
       steps {
         sh '''
-          set -euxo pipefail
+            set -eu
           docker build -t ${IMAGE_NAME} .
         '''
       }
@@ -36,7 +36,7 @@ pipeline {
     stage('Deploy (Docker Desktop)') {
       steps {
         sh '''
-          set -euxo pipefail
+            set -eu
           docker compose down || true
           docker compose up -d --build
           docker ps
