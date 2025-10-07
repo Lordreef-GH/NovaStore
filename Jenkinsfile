@@ -11,14 +11,15 @@ pipeline {
     stage('Install & Build') {
       steps {
         sh '''
-            set -eu
-          docker run --rm -u root:root -v "$PWD:/app" -w /app node:${NODE_VERSION}-alpine sh -lc '
-            set -eu
-            node -v
-            npm -v
-            npm ci || npm install
-            npm run build
-          '
+          set -eu
+          docker run --rm -u root:root --volumes-from novastore-jenkins -w "$WORKSPACE" \
+            node:${NODE_VERSION}-alpine sh -lc '
+              set -eu
+              node -v
+              npm -v
+              npm ci || npm install
+              npm run build
+            '
         '''
         archiveArtifacts artifacts: 'dist/**', fingerprint: true
       }
