@@ -37,9 +37,10 @@ pipeline {
     stage('Deploy (Docker Desktop)') {
       steps {
         sh '''
-            set -eu
-          docker compose down || true
-          docker compose up -d --build
+          set -eu
+          export NOVASTORE_PORT=${NOVASTORE_PORT:-8085}
+          docker compose -p novastar1 down || true
+          docker compose -p novastar1 up -d --build
           docker ps
         '''
       }
